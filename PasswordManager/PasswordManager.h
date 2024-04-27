@@ -22,6 +22,8 @@ private:
 public:
     PasswordManager();
 
+    void Menu();
+
     void createNewPair();
 
     void addUser(const User *newUser);
@@ -29,8 +31,13 @@ public:
 
     std::string getPasswordByID(const int& ID);
     std::string getUserByID(const int& ID);
+    int getIDbyUsername(const std::string& _username);
 
-    std::string getPasswordByUserID(const int& _userID);
+
+    int checkIfUserExists(const std::string& _username);
+
+
+    std::vector<std::string> getPasswordsByUserID(const int& _userID);
 
     void connectTuple(const int& _userID, const int& _passwordID);
 };

@@ -51,17 +51,17 @@ std::string PasswordManager::getUserByID(const int &ID) {
     return "404";
 }
 
-std::string PasswordManager::getPasswordByUserID(const int &_userID) {
+std::vector<std::string> PasswordManager::getPasswordsByUserID(const int &_userID) {
     std::string password;
     std::vector<std::string>passwordsConnectedWithUser = {};
     for(auto existingTuple: this->connectedIDs) {
         if(std::get<0>(existingTuple) == _userID) {
             int theID = std::get<1>(existingTuple);
             password = getPasswordByID(theID);
-            return password;
+            passwordsConnectedWithUser.push_back(password);
         }
     }
-    return "404";
+    return passwordsConnectedWithUser;
 }
 
 PasswordManager::PasswordManager() {
@@ -80,17 +80,92 @@ void PasswordManager::createNewPair() {
 
     int newID= reader.lastID() + 1;
 
+
     std::cout << "podaj nazwę użytkownika: ";
     std::cin >> newUsername;
     std::cout << "podaj swoje hasło: ";
     std::cin >> newPassword;
 
-    auto *newUserObject = new User(newUsername, newID);
-    auto *newPasswordObject = new Password(newPassword, newID);
+    if(checkIfUserExists(newUsername) == 0) {
+        std::cout << "New user detected, welcome!";
+        auto *newUserObject = new User(newUsername, newID);
+        auto *newPasswordObject = new Password(newPassword, newID);
 
-    addUser(newUserObject);
-    addPassword(newPasswordObject);
+        addUser(newUserObject);
+        addPassword(newPasswordObject);
 
-    connectTuple(newUserObject->getUserID(), newPasswordObject->getID());
+        connectTuple(newUserObject->getUserID(), newPasswordObject->getID());
+    } else {
+        std::cout << "welcome back, " << newUsername << "! Good to see you again!\n";
+        int theID = checkIfUserExists(newUsername);
+        auto *newUserObject = new User(newUsername, theID);
+        auto *newPasswordObject = new Password(newPassword, newID);
 
+        addPassword(newPasswordObject);
+
+        connectTuple(newUserObject->getUserID(), newPasswordObject->getID());
+        delete(newUserObject);
+        delete(newPasswordObject);
+    }
+}
+
+int PasswordManager::checkIfUserExists(const std::string& _username) {
+    for(const auto& user: this->usersVector) {
+        if(user.getUsername() == _username) {
+            return user.getUserID();
+        }
+    }
+
+    return 0;
+}
+
+void PasswordManager::Menu() {
+    int choice = 0;
+    std::string menuString = " --- MENU --- \n1 - Add a password\n2 - Update a password\n3 - View passwords associated with username";
+    std::cout << menuString;
+
+    std::cout << "\nchoose your option (1-3)\n";
+    std::cin >> choice;
+
+    switch(choice) {
+        case 1: {
+            createNewPair();
+            break;
+        }
+        case 2: {
+//            TODO: add updating functionality
+            break;
+        }
+        case 3: {
+            std::cout << "What username do you want to check?\n";
+            std::string username;
+            std::cin >> username;
+            if(checkIfUserExists(username) == 0) {
+                std::cerr << "user doesn't exist! Did you want to add a user instead?";
+                break;
+            }
+            int id = getIDbyUsername(username);
+            std::vector<std::string> passwords = getPasswordsByUserID(id);
+
+
+            for(auto _password: passwords) {
+                std::cout << _password << "\n";
+            }
+            break;
+        }
+        default: {
+            std::cerr << "wrong action number!\n";
+        }
+
+    }
+
+}
+
+int PasswordManager::getIDbyUsername(const std::string &_username) {
+    for(auto user: this->usersVector) {
+        if(user.getUsername() == _username) {
+            return user.getUserID();
+        }
+    }
+    return 0;
 }

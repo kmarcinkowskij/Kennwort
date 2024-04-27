@@ -87,7 +87,7 @@ std::vector<std::tuple<int, int>> ReadFromFile::readConnectedIDs() {
 }
 
 int ReadFromFile::lastID() {
-    std::ifstream reader("tuplesStorageFile.txt");
+    std::ifstream reader("PasswordsStorageFile.txt");
 
     if(!reader.is_open()) {
         std::cerr << "Something went wrong with the file\n";

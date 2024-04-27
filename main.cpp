@@ -8,6 +8,6 @@
 int main() {
     auto *theManager = new PasswordManager();
 
-    theManager->createNewPair();
+    theManager->Menu();
     return 0;
 }
