@@ -10,27 +10,32 @@
 #include <vector>
 #include <tuple>
 #include "../Password/Password.h"
-#include "../User/User.h"
+#include "../Account/Account.h"
 
 class PasswordManager {
 private:
     std::vector<Password>passwordsVector = {};
-    std::vector<User>usersVector = {};
+    std::vector<Account>accountsVector = {};
     std::vector<std::tuple<int, int>>connectedIDs = {};
-
-
 public:
     PasswordManager();
 
+    void Menu();
+
     void createNewPair();
 
-    void addUser(const User *newUser);
+    void addUser(const Account *newAccount);
     void addPassword(const Password *newPassword);
 
     std::string getPasswordByID(const int& ID);
     std::string getUserByID(const int& ID);
+    int getIDbyAccountName(const std::string& _accountName);
 
-    std::string getPasswordByUserID(const int& _userID);
+
+    int checkIfAccountExists(const std::string& _accountName);
+
+
+    std::vector<std::string> getPasswordsByAccountID(const int& _accountID);
 
     void connectTuple(const int& _userID, const int& _passwordID);
 };

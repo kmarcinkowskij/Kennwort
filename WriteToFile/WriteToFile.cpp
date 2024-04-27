@@ -25,12 +25,12 @@ void WriteToFile::savePasswordToFile(const Password& _password) {
     this->_storageFile.close();
 }
 
-void WriteToFile::saveUserToFile(const User &_user) {
-    _storageFile = std::ofstream("usersStorageFile.txt", std::ios_base::app);
+void WriteToFile::saveAccountToFile(const Account &_user) {
+    _storageFile = std::ofstream("accountsStorageFile.txt", std::ios_base::app);
     if(!_storageFile.is_open()) {
         std::cerr << "Something went wrong with the file!\n";
     }
-    this->_storageFile << _user.getUserID()<< ":"<<_user.getUsername() << "\n";
+    this->_storageFile << _user.getAccountID() << ":" << _user.getAccountName() << "\n";
     this->_storageFile.flush();
     this->_storageFile.close();
 }

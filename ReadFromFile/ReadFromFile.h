@@ -9,7 +9,7 @@
 #include <fstream>
 #include <vector>
 #include <tuple>
-#include "../User/User.h"
+#include "../Account/Account.h"
 #include "../Password/Password.h"
 
 
@@ -21,7 +21,8 @@ private:
 public:
     ReadFromFile() : _storageFile() {};
 
-    std::vector<User> readUsers();
+    static bool checkMasterAccount();
+    std::vector<Account> readAccounts();
     std::vector<Password> readPasswords();
     std::vector<std::tuple<int, int>> readConnectedIDs();
 

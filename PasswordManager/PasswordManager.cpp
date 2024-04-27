@@ -5,6 +5,7 @@
 #include "PasswordManager.h"
 #include "../WriteToFile/WriteToFile.h"
 #include "../ReadFromFile/ReadFromFile.h"
+#include "../Crypto/Crypto.h"
 
 void PasswordManager::addPassword(const Password *newPassword) {
     WriteToFile writer = *new WriteToFile;
@@ -15,24 +16,27 @@ void PasswordManager::addPassword(const Password *newPassword) {
 std::string PasswordManager::getPasswordByID(const int &ID) {
     for(const auto& existingPassword: this->passwordsVector) {
         if(existingPassword.getID() == ID) {
+            auto *crypto = new Crypto;
+//            size_t encrypted = crypto->encryptPassword(existingPassword);
+//            return std::to_string(encrypted);
             return existingPassword.getPassword();
         }
     }
     return "404";
 }
 
-void PasswordManager::addUser(const User *newUser) {
+void PasswordManager::addUser(const Account *newAccount) {
     WriteToFile writer = *new WriteToFile;
-    std::string newUsername = newUser->getUsername();
-    //Check for existing users with username;
-    for(const auto& existingUser: this->usersVector) {
-        if(existingUser.getUsername() == newUsername) {
+    std::string newUsername = newAccount->getAccountName();
+    //Check for existing users with accountName;
+    for(const auto& existingUser: this->accountsVector) {
+        if(existingUser.getAccountName() == newUsername) {
             return;
         }
     }
 
-    writer.saveUserToFile(*newUser);
-    this->usersVector.push_back(*newUser);
+    writer.saveAccountToFile(*newAccount);
+    this->accountsVector.push_back(*newAccount);
 }
 
 void PasswordManager::connectTuple(const int &_userID, const int &_passwordID) {
@@ -43,30 +47,30 @@ void PasswordManager::connectTuple(const int &_userID, const int &_passwordID) {
 }
 
 std::string PasswordManager::getUserByID(const int &ID) {
-    for(const auto& existingUser: this->usersVector) {
-        if(existingUser.getUserID() == ID) {
-            return existingUser.getUsername();
+    for(const auto& existingUser: this->accountsVector) {
+        if(existingUser.getAccountID() == ID) {
+            return existingUser.getAccountName();
         }
     }
     return "404";
 }
 
-std::string PasswordManager::getPasswordByUserID(const int &_userID) {
+std::vector<std::string> PasswordManager::getPasswordsByAccountID(const int &_accountID) {
     std::string password;
     std::vector<std::string>passwordsConnectedWithUser = {};
     for(auto existingTuple: this->connectedIDs) {
-        if(std::get<0>(existingTuple) == _userID) {
+        if(std::get<0>(existingTuple) == _accountID) {
             int theID = std::get<1>(existingTuple);
             password = getPasswordByID(theID);
-            return password;
+            passwordsConnectedWithUser.push_back(password);
         }
     }
-    return "404";
+    return passwordsConnectedWithUser;
 }
 
 PasswordManager::PasswordManager() {
     auto *reader = new ReadFromFile();
-    this->usersVector = reader->readUsers();
+    this->accountsVector = reader->readAccounts();
     this->passwordsVector = reader->readPasswords();
     this->connectedIDs = reader->readConnectedIDs();
 }
@@ -80,17 +84,93 @@ void PasswordManager::createNewPair() {
 
     int newID= reader.lastID() + 1;
 
+
     std::cout << "podaj nazwę użytkownika: ";
     std::cin >> newUsername;
     std::cout << "podaj swoje hasło: ";
     std::cin >> newPassword;
 
-    auto *newUserObject = new User(newUsername, newID);
-    auto *newPasswordObject = new Password(newPassword, newID);
+    if(checkIfAccountExists(newUsername) == 0) {
+        std::cout << "New user detected, welcome!";
+        auto *newUserObject = new Account(newUsername, newID);
+        auto *newPasswordObject = new Password(newPassword, newID);
 
-    addUser(newUserObject);
-    addPassword(newPasswordObject);
+        addUser(newUserObject);
+        addPassword(newPasswordObject);
 
-    connectTuple(newUserObject->getUserID(), newPasswordObject->getID());
+        connectTuple(newUserObject->getAccountID(), newPasswordObject->getID());
+    } else {
+        std::cout << "welcome back, " << newUsername << "! Good to see you again!\n";
+        int theID = checkIfAccountExists(newUsername);
+        auto *newUserObject = new Account(newUsername, theID);
+        auto *newPasswordObject = new Password(newPassword, newID);
 
+        addPassword(newPasswordObject);
+
+        connectTuple(newUserObject->getAccountID(), newPasswordObject->getID());
+        delete(newUserObject);
+        delete(newPasswordObject);
+    }
+}
+
+int PasswordManager::checkIfAccountExists(const std::string& _accountName) {
+    for(const auto& user: this->accountsVector) {
+        if(user.getAccountName() == _accountName) {
+            return user.getAccountID();
+        }
+    }
+
+    return 0;
+}
+
+void PasswordManager::Menu() {
+
+    int choice = 0;
+    std::string menuString = " --- MENU --- \n1 - Add a password\n2 - Update a password\n3 - View passwords associated with accountName";
+    std::cout << menuString;
+
+    std::cout << "\nchoose your option (1-3)\n";
+    std::cin >> choice;
+
+    switch(choice) {
+        case 1: {
+            createNewPair();
+            break;
+        }
+        case 2: {
+//            TODO: add updating functionality
+            break;
+        }
+        case 3: {
+            std::cout << "What accountName do you want to check?\n";
+            std::string username;
+            std::cin >> username;
+            if(checkIfAccountExists(username) == 0) {
+                std::cerr << "user doesn't exist! Did you want to add a user instead?";
+                break;
+            }
+            int id = getIDbyAccountName(username);
+            std::vector<std::string> passwords = getPasswordsByAccountID(id);
+
+
+            for(auto _password: passwords) {
+                std::cout << _password << "\n";
+            }
+            break;
+        }
+        default: {
+            std::cerr << "wrong action number!\n";
+        }
+
+    }
+
+}
+
+int PasswordManager::getIDbyAccountName(const std::string &_accountName) {
+    for(auto user: this->accountsVector) {
+        if(user.getAccountName() == _accountName) {
+            return user.getAccountID();
+        }
+    }
+    return 0;
 }

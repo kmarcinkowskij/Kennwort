@@ -5,9 +5,9 @@
 #include <tuple>
 #include "ReadFromFile.h"
 
-std::vector<User> ReadFromFile::readUsers() {
-    std::vector<User> users = {};
-    std::ifstream reader("usersStorageFile.txt");
+std::vector<Account> ReadFromFile::readAccounts() {
+    std::vector<Account> users = {};
+    std::ifstream reader("accountsStorageFile.txt");
 
     if(!reader.is_open()) {
         std::cerr << "Something went wrong with the file\n";
@@ -25,12 +25,13 @@ std::vector<User> ReadFromFile::readUsers() {
             username = nametoken;
         }
 
-        User *newUser = new User(username, id);
+        Account *newUser = new Account(username, id);
         users.push_back(*newUser);
     }
 
     return users;
 }
+
 
 std::vector<Password> ReadFromFile::readPasswords() {
     std::vector<Password> passwords = {};
@@ -87,7 +88,7 @@ std::vector<std::tuple<int, int>> ReadFromFile::readConnectedIDs() {
 }
 
 int ReadFromFile::lastID() {
-    std::ifstream reader("tuplesStorageFile.txt");
+    std::ifstream reader("PasswordsStorageFile.txt");
 
     if(!reader.is_open()) {
         std::cerr << "Something went wrong with the file\n";
@@ -104,4 +105,28 @@ int ReadFromFile::lastID() {
     }
 
     return userID;
+}
+
+
+
+bool is_empty(std::fstream& pFile)
+{
+    pFile.seekg(0, std::ios::end);
+    int length = pFile.tellg();
+    if(length == 0) {
+        return true;
+    }
+    return false;
+}
+
+
+bool ReadFromFile::checkMasterAccount() {
+    std::fstream reader("masterAccount.txt", std::fstream::app);
+
+//    reader.open("masterAccount.txt", std::fstream::app);
+    if(is_empty(reader)) {
+        return false;
+    }
+    reader.close();
+    return true;
 }
