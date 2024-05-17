@@ -17,7 +17,7 @@ public:
     std::size_t encryptPassword(const std::string &_password);
     void encryptFile(const std::string& _key, const char* _filename, const char* _newFilename);
     void decryptFile(const std::string& _key, const char* _filename, const char* _newFilename);
-    int saltToKey(const std::string& _salt);
+    long long int saltToKey(const std::string& _salt);
 };
 
 

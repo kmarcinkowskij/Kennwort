@@ -10,7 +10,9 @@
 int main() {
     auto *read = new ReadFromFile();
     auto *masterAccount = new MasterAccount();
+    auto *crp = new Crypto;
 
+    crp->decryptFile("2137", "MasterAccountEnc.txt", "MasterAccountTempDec.txt");
     if(!ReadFromFile::checkMasterAccount()) {
         std::cout << "no master account found!\n";
         masterAccount->createUser();
@@ -19,7 +21,7 @@ int main() {
 
     *masterAccount = read->readMasterAccount();
     std::cout << "welcome back!";
-    auto *crp = new Crypto;
+
 //    crp->encryptFile(masterAccount->getPassSalt(), "PasswordsStorageFile.txt");
 
     MasterAccount::authenticated = masterAccount->authenticateUser();
@@ -33,7 +35,6 @@ int main() {
     }
     crp->encryptFile(masterAccount->getPassSalt(), "passwordsTempDecrypted.txt", "PasswordsStorageFileEnc.txt");
     remove("passwordsTempDecrypted.txt");
-
-
+    remove("MasterAccountTempDec.txt");
     return 0;
 }

@@ -43,7 +43,7 @@ void WriteToFile::saveMasterAccountToFile(MasterAccount _masterAccount) {
         std::cerr << "Something went wrong with the file!\n";
     }
     this->_storageFile << _masterAccount.getUsername() << ":" << _masterAccount.getHashedPassword() << ":" << _masterAccount.getPassSalt();
-    crypto->encryptFile("2137", "masterAccount.txt", "MasterAccountEnc.txt");
     this->_storageFile.flush();
     this->_storageFile.close();
+    crypto->encryptFile("2137", "masterAccount.txt", "MasterAccountEnc.txt");
 }

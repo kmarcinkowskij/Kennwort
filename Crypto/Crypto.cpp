@@ -50,7 +50,7 @@ void Crypto::decryptFile(const std::string &_key, const char *_filename, const c
 
 
 
-int Crypto::saltToKey(const std::string& _salt) {
+long long int Crypto::saltToKey(const std::string& _salt) {
     std::string salt;
     for(char character: _salt) {
         if(std::isalpha(character)) {
@@ -66,7 +66,7 @@ int Crypto::saltToKey(const std::string& _salt) {
     }
 
 
-    return std::stoi(salt);
+    return std::stoll(salt);
 
 }
 

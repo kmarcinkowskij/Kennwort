@@ -123,7 +123,7 @@ bool is_empty(std::fstream& pFile)
 
 
 bool ReadFromFile::checkMasterAccount() {
-    std::fstream reader("masterAccount.txt", std::fstream::app);
+    std::fstream reader("MasterAccountTempDec.txt", std::fstream::app);
 
 //    reader.open("masterAccount.txt", std::fstream::app);
     if(is_empty(reader)) {
@@ -150,7 +150,7 @@ MasterAccount ReadFromFile::readMasterAccount() {
     auto *accountData = new MasterAccount();
 
 
-    std::ifstream reader("masterAccount.txt");
+    std::ifstream reader("MasterAccountTempDec.txt");
 
     if(reader.is_open()) {
         std::string line;
