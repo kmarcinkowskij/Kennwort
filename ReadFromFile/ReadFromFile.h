@@ -9,8 +9,10 @@
 #include <fstream>
 #include <vector>
 #include <tuple>
+#include <map>
 #include "../Account/Account.h"
 #include "../Password/Password.h"
+#include "../MasterAccount/MasterAccount.h"
 
 
 class ReadFromFile {
@@ -25,6 +27,7 @@ public:
     std::vector<Account> readAccounts();
     std::vector<Password> readPasswords();
     std::vector<std::tuple<int, int>> readConnectedIDs();
+    MasterAccount readMasterAccount();
 
     int lastID();
 

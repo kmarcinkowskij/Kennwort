@@ -6,14 +6,18 @@
 #define PASSWORDMANAGER_CRYPTO_H
 
 #include <iostream>
+#include <fstream>
 #include "../Password/Password.h"
+#include "../MasterAccount/MasterAccount.h"
 
 class Crypto {
     std::hash<std::string> hasher;
 
 public:
-    std::size_t encryptPassword(const Password& _password);
-    std::size_t encryptPasswordWithSalt(const Password& _password);
+    std::size_t encryptPassword(const std::string &_password);
+    void encryptFile(const std::string& _key, const char* _filename, const char* _newFilename);
+    void decryptFile(const std::string& _key, const char* _filename, const char* _newFilename);
+    int saltToKey(const std::string& _salt);
 };
 
 

@@ -85,13 +85,13 @@ void PasswordManager::createNewPair() {
     int newID= reader.lastID() + 1;
 
 
-    std::cout << "podaj nazwę użytkownika: ";
+    std::cout << "Account name: ";
     std::cin >> newUsername;
-    std::cout << "podaj swoje hasło: ";
+    std::cout << "\nAccount Password: ";
     std::cin >> newPassword;
 
     if(checkIfAccountExists(newUsername) == 0) {
-        std::cout << "New user detected, welcome!";
+        std::cout << "New account detected";
         auto *newUserObject = new Account(newUsername, newID);
         auto *newPasswordObject = new Password(newPassword, newID);
 
@@ -100,16 +100,18 @@ void PasswordManager::createNewPair() {
 
         connectTuple(newUserObject->getAccountID(), newPasswordObject->getID());
     } else {
-        std::cout << "welcome back, " << newUsername << "! Good to see you again!\n";
-        int theID = checkIfAccountExists(newUsername);
-        auto *newUserObject = new Account(newUsername, theID);
-        auto *newPasswordObject = new Password(newPassword, newID);
-
-        addPassword(newPasswordObject);
-
-        connectTuple(newUserObject->getAccountID(), newPasswordObject->getID());
-        delete(newUserObject);
-        delete(newPasswordObject);
+//        std::cout << "welcome back, " << newUsername << "! Good to see you again!\n";
+//        int theID = checkIfAccountExists(newUsername);
+//        auto *newUserObject = new Account(newUsername, theID);
+//        auto *newPasswordObject = new Password(newPassword, newID);
+//
+//        addPassword(newPasswordObject);
+//
+//        connectTuple(newUserObject->getAccountID(), newPasswordObject->getID());
+//        delete(newUserObject);
+//        delete(newPasswordObject);
+//         TODO: CONSIDER MULTIPLE FILE APPROACH (FILE PER ACCOUNT), OTHERWISE CREATE UPDATING FUNCTION PER ACC
+        std::cerr << "That account already exists! Perhaps you mean to update the password?\n";
     }
 }
 
@@ -126,7 +128,7 @@ int PasswordManager::checkIfAccountExists(const std::string& _accountName) {
 void PasswordManager::Menu() {
 
     int choice = 0;
-    std::string menuString = " --- MENU --- \n1 - Add a password\n2 - Update a password\n3 - View passwords associated with accountName";
+    std::string menuString = " --- MENU --- \n1 - Add a password\n2 - Update a password\n3 - View passwords associated with account Name";
     std::cout << menuString;
 
     std::cout << "\nchoose your option (1-3)\n";
@@ -142,7 +144,7 @@ void PasswordManager::Menu() {
             break;
         }
         case 3: {
-            std::cout << "What accountName do you want to check?\n";
+            std::cout << "What account Name do you want to check?\n";
             std::string username;
             std::cin >> username;
             if(checkIfAccountExists(username) == 0) {

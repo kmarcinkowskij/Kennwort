@@ -3,7 +3,9 @@
 //
 
 #include <tuple>
+#include <sstream>
 #include "ReadFromFile.h"
+#include "../Crypto/Crypto.h"
 
 std::vector<Account> ReadFromFile::readAccounts() {
     std::vector<Account> users = {};
@@ -35,7 +37,7 @@ std::vector<Account> ReadFromFile::readAccounts() {
 
 std::vector<Password> ReadFromFile::readPasswords() {
     std::vector<Password> passwords = {};
-    std::ifstream reader("PasswordsStorageFile.txt");
+    std::ifstream reader("passwordsTempDecrypted.txt");
 
     if(!reader.is_open()) {
         std::cerr << "Something went wrong with the file\n";
@@ -88,7 +90,7 @@ std::vector<std::tuple<int, int>> ReadFromFile::readConnectedIDs() {
 }
 
 int ReadFromFile::lastID() {
-    std::ifstream reader("PasswordsStorageFile.txt");
+    std::ifstream reader("passwordsTempDecrypted.txt");
 
     if(!reader.is_open()) {
         std::cerr << "Something went wrong with the file\n";
@@ -129,4 +131,43 @@ bool ReadFromFile::checkMasterAccount() {
     }
     reader.close();
     return true;
+}
+
+std::vector<std::string> split(const std::string& str, char delimiter) {
+    std::vector<std::string> tokens;
+    std::string token;
+    std::stringstream ss(str);
+
+    while (std::getline(ss, token, delimiter)) {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
+
+MasterAccount ReadFromFile::readMasterAccount() {
+    std::string usr, pass, master, passSalt;
+    auto *accountData = new MasterAccount();
+
+
+    std::ifstream reader("masterAccount.txt");
+
+    if(reader.is_open()) {
+        std::string line;
+
+        while(std::getline(reader, line)) {
+            size_t found = line.find(':');
+            if(found != std::string::npos) {
+                std::vector<std::string> tokens = split(line, ':');
+                usr = tokens.at(0);
+                pass = tokens.at(1);
+                passSalt = tokens.at(2);
+
+            }
+        }
+    }
+
+    accountData->setData(usr, pass, passSalt);
+
+    return *accountData;
 }

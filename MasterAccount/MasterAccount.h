@@ -6,19 +6,25 @@
 #define PASSWORDMANAGER_MASTERACCOUNT_H
 
 #include <iostream>
+#include "../Crypto/Crypto.h"
 
 class MasterAccount {
 private:
     std::string username;
     std::string hashedPassword;
-    std::string masterSalt;
     std::string passSalt;
 public:
 
-    MasterAccount(std::string _username, std::string _hashedPassword, std::string _masterSalt, std::string _passSalt);
-
+    inline static bool authenticated;
+    inline static time_t last_logged_in;
+    MasterAccount()= default;
+    void setData(std::string _username, std::string _password, std::string _passSalt);
     bool authenticateUser();
     void createUser();
+
+    std::string getUsername();
+    std::string getHashedPassword();
+    std::string getPassSalt();
 };
 
 #endif //PASSWORDMANAGER_MASTERACCOUNT_H

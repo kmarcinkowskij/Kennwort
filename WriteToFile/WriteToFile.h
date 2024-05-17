@@ -9,6 +9,7 @@
 #include <iostream>
 #include "../Password/Password.h"
 #include "../Account/Account.h"
+#include "../MasterAccount/MasterAccount.h"
 
 class WriteToFile {
 private:
@@ -21,6 +22,7 @@ public:
     void saveTupleToFile(std::tuple<int,int> connectedIDs);
     void savePasswordToFile(const Password& _password);
     void saveAccountToFile(const Account& _user);
+    void saveMasterAccountToFile(MasterAccount _masterAccount);
 
     WriteToFile(const WriteToFile&){};
 };
