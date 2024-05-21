@@ -84,11 +84,14 @@ void PasswordManager::createNewPair() {
 
     int newID= reader.lastID() + 1;
 
-
+    do {
     std::cout << "Account name: ";
     std::cin >> newUsername;
+    }while(newUsername.empty() || newUsername == " ");
+    do{
     std::cout << "\nAccount Password: ";
     std::cin >> newPassword;
+    }while(newPassword.empty() || newPassword == " ");
 
     if(checkIfAccountExists(newUsername) == 0) {
         std::cout << "New account detected";
@@ -100,18 +103,7 @@ void PasswordManager::createNewPair() {
 
         connectTuple(newUserObject->getAccountID(), newPasswordObject->getID());
     } else {
-//        std::cout << "welcome back, " << newUsername << "! Good to see you again!\n";
-//        int theID = checkIfAccountExists(newUsername);
-//        auto *newUserObject = new Account(newUsername, theID);
-//        auto *newPasswordObject = new Password(newPassword, newID);
-//
-//        addPassword(newPasswordObject);
-//
-//        connectTuple(newUserObject->getAccountID(), newPasswordObject->getID());
-//        delete(newUserObject);
-//        delete(newPasswordObject);
-//         TODO: CONSIDER MULTIPLE FILE APPROACH (FILE PER ACCOUNT), OTHERWISE CREATE UPDATING FUNCTION PER ACC
-        std::cerr << "That account already exists! Perhaps you mean to update the password?\n";
+        std::cerr << "That account already exists! Perhaps you meant to update an account?\n";
     }
 }
 
@@ -128,7 +120,7 @@ int PasswordManager::checkIfAccountExists(const std::string& _accountName) {
 void PasswordManager::Menu() {
 
     int choice = 0;
-    std::string menuString = " --- MENU --- \n1 - Add a password\n2 - Update a password\n3 - View passwords associated with account Name";
+    std::string menuString = " --- MENU --- \n1 - Add a password\n2 - View password associated with account";
     std::cout << menuString;
 
     std::cout << "\nchoose your option (1-3)\n";
@@ -140,13 +132,11 @@ void PasswordManager::Menu() {
             break;
         }
         case 2: {
-//            TODO: add updating functionality
-            break;
-        }
-        case 3: {
             std::cout << "What account Name do you want to check?\n";
             std::string username;
-            std::cin >> username;
+            do {
+                std::cin >> username;
+            }while(username.empty() || username == " ");
             if(checkIfAccountExists(username) == 0) {
                 std::cerr << "user doesn't exist! Did you want to add a user instead?";
                 break;
@@ -162,6 +152,7 @@ void PasswordManager::Menu() {
         }
         default: {
             std::cerr << "wrong action number!\n";
+            break;
         }
 
     }

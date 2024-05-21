@@ -10,6 +10,7 @@
 #include "../Password/Password.h"
 #include "../Account/Account.h"
 #include "../MasterAccount/MasterAccount.h"
+#include <cerrno>
 
 class WriteToFile {
 private:
@@ -23,6 +24,7 @@ public:
     void savePasswordToFile(const Password& _password);
     void saveAccountToFile(const Account& _user);
     void saveMasterAccountToFile(MasterAccount _masterAccount);
+    void updateLine(const std::string& _lineID, const std::string _newLine, const char* filename);
 
     WriteToFile(const WriteToFile&){};
 };

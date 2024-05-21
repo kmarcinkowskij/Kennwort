@@ -1,16 +1,15 @@
 #include <iostream>
 #include "Password/Password.h"
 #include "PasswordManager/PasswordManager.h"
-#include "Account/Account.h"
 #include "ReadFromFile/ReadFromFile.h"
 #include "MasterAccount/MasterAccount.h"
 #include "Crypto/Crypto.h"
-
 
 int main() {
     auto *read = new ReadFromFile();
     auto *masterAccount = new MasterAccount();
     auto *crp = new Crypto;
+
 
     crp->decryptFile("2137", "MasterAccountEnc.txt", "MasterAccountTempDec.txt");
     if(!ReadFromFile::checkMasterAccount()) {
@@ -22,13 +21,10 @@ int main() {
     *masterAccount = read->readMasterAccount();
     std::cout << "welcome back!";
 
-//    crp->encryptFile(masterAccount->getPassSalt(), "PasswordsStorageFile.txt");
-
     MasterAccount::authenticated = masterAccount->authenticateUser();
 
-
-
     if(MasterAccount::authenticated) {
+
         crp->decryptFile(masterAccount->getPassSalt(), "PasswordsStorageFileEnc.txt", "passwordsTempDecrypted.txt");
         auto *theManager = new PasswordManager();
         theManager->Menu();
